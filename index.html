@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AETHERIAL | 灵魂萃取</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <canvas id="starCanvas" class="star-canvas" style="opacity: 1"></canvas>
+
+    <div class="ui-layer">
+      <!-- A. 首页 -->
+      <div id="page-landing" class="page">
+        <div class="brand">AETHERIAL</div>
+        <div class="tagline">寻找灵魂的嗅觉对位</div>
+        <div class="auth-section">
+          <label class="avatar-circle">
+            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+            <img id="avatarImg" class="avatar-img" style="display: none;">
+            <span id="avatarTip" class="avatar-tip">递交头像</span>
+          </label>
+          <input type="text" id="nicknameInput" class="nickname-input" placeholder="输入灵感昵称">
+        </div>
+        <button class="btn-enter" id="btnEnter">立即寻香</button>
+        <div class="landing-desc">完成前调、中调、后调的凝聚，<br>塑造独属于你的香水塑人格！</div>
+      </div>
+
+      <!-- B. 打字机 -->
+      <div id="page-intro" class="page" style="display: none;">
+        <div class="typewriter-box">
+          <span id="typeMain" class="tw-main"></span>
+          <span id="typeSub" class="tw-sub"></span>
+        </div>
+      </div>
+
+      <!-- C. 答题区 -->
+      <div id="page-quiz" class="page" style="display: none;">
+        <div class="quiz-wrapper">
+          <div id="quizProgress" class="quiz-progress" style="display: none;">1/12</div>
+          <div id="quizMeta" class="q-meta">TOP NOTES</div>
+          <div class="q-title-box"><span id="qTitle" class="q-title"></span></div>
+          <!-- 终极拷问：6选项布局 -->
+          <div id="finalOptions" class="final-options-grid" style="display: none;"></div>
+          <div id="finalSingle" class="final-single" style="display: none;">
+            <div id="finalExpanded" class="final-opt-expanded">
+              <span id="expandedText" class="expanded-text"></span>
+            </div>
+          </div>
+          <!-- 常规题目：4选项布局 -->
+          <div id="optionsGrid" class="options-grid"></div>
+        </div>
+        <div class="fixed-quote-area"><span id="quoteText" class="quote-text"></span></div>
+      </div>
+
+      <!-- D. 进度展示 -->
+      <div id="page-progress" class="page" style="display: none;">
+        <div class="status-header">
+          <div id="statusZh" class="status-zh"></div>
+          <div id="statusEn" class="status-en"></div>
+        </div>
+        <div class="bottle-container" id="bottleAnchor">
+          <canvas id="bottleCanvas" class="bottle-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- E. 宇宙留香过渡 -->
+      <div id="page-shaping" class="page" style="display: none;">
+        <div class="shaping-content">
+          <span id="shapingName" class="user-highlight"></span>
+          <span class="shaping-desc">正在香氛中重塑宇宙留香...</span>
+        </div>
+      </div>
+
+      <!-- F. 结果页 -->
+      <div id="page-result" class="page fade-in" style="display: none;">
+        <div class="res-user-row">
+          <img id="resultAvatar" class="u-mini" mode="aspectFill"></img>
+          <span id="resultNickname"></span>
+        </div>
+        <div class="res-card">
+          <div id="resEn" class="res-en"></div>
+          <div id="resZh" class="res-zh"></div>
+          <div class="notes-line">
+            <div class="note-box"><div class="n-label">前调</div><div id="resTop" class="n-val"></div></div>
+            <div class="n-sep"></div>
+            <div class="note-box"><div class="n-label">中调</div><div id="resHeart" class="n-val"></div></div>
+            <div class="n-sep"></div>
+            <div class="note-box"><div class="n-label">后调</div><div id="resBase" class="n-val"></div></div>
+          </div>
+          <span id="resSoul" class="res-soul"></span>
+        </div>
+        <div class="res-btns">
+          <button class="btn-restart" id="btnRestart">宇宙重启</button>
+          <button class="btn-analysis" id="btnAnalysis">深度解析<div class="shimmer"></div></button>
+        </div>
+      </div>
+
+      <!-- G. 解析页 -->
+      <div id="page-analysis" class="page analysis-page" style="display: none;">
+        <div class="analysis-back-top" id="btnBack">
+          <span class="analysis-back-icon">‹</span>
+        </div>
+        <div class="analysis-scroll">
+          <div class="analysis-header">
+            <div class="analysis-icon">✧</div>
+            <div class="analysis-title">香水塑人格深度解析</div>
+            <div class="analysis-subtitle">Scent Profile Analysis</div>
+          </div>
+
+          <!-- 香调切换按钮 -->
+          <div class="note-tabs">
+            <div class="note-tab active" data-type="top">前调</div>
+            <div class="note-tab" data-type="heart">中调</div>
+            <div class="note-tab" data-type="base">后调</div>
+          </div>
+
+          <!-- 香调内容展示 -->
+          <div class="note-display">
+            <div class="note-label" id="noteLabel">TOP NOTES</div>
+            <span id="noteContent" class="note-content"></span>
+          </div>
+
+          <!-- 模块切换按钮 -->
+          <div class="section-tabs">
+            <div class="section-tab active" data-section="insight">灵魂总评</div>
+            <div class="section-tab" data-section="fate">宿命余香</div>
+          </div>
+
+          <!-- 灵魂总评 -->
+          <div id="insightCard" class="insight-card">
+            <div class="insight-card-header">
+              <div class="insight-card-icon">◆</div>
+              <span class="insight-card-title">灵魂总评</span>
+            </div>
+            <span id="insightContent" class="insight-card-content"></span>
+          </div>
+
+          <!-- 宿命余香 -->
+          <div id="fateCard" class="fate-card" style="display: none;">
+            <div class="fate-header">
+              <div class="fate-icon">✦</div>
+              <span class="fate-title">宿命余香</span>
+            </div>
+
+            <div class="fate-section">
+              <div class="fate-section-label">相似灵魂</div>
+              <div class="fate-similar-list">
+                <div class="fate-perfume-item">
+                  <div class="fate-perfume-header">
+                    <div id="similar1En" class="fate-perfume-en"></div>
+                    <div id="similar1Zh" class="fate-perfume-zh"></div>
+                  </div>
+                  <div class="fate-perfume-notes">
+                    <span id="similar1Top" class="fate-note"></span>
+                    <span id="similar1Heart" class="fate-note"></span>
+                    <span id="similar1Base" class="fate-note"></span>
+                  </div>
+                  <div class="fate-similarity">
+                    <div id="similar1Bar" class="fate-similarity-bar" style="width: 0%"></div>
+                    <span id="similar1Text" class="fate-similarity-text"></span>
+                  </div>
+                </div>
+                <div class="fate-perfume-item">
+                  <div class="fate-perfume-header">
+                    <div id="similar2En" class="fate-perfume-en"></div>
+                    <div id="similar2Zh" class="fate-perfume-zh"></div>
+                  </div>
+                  <div class="fate-perfume-notes">
+                    <span id="similar2Top" class="fate-note"></span>
+                    <span id="similar2Heart" class="fate-note"></span>
+                    <span id="similar2Base" class="fate-note"></span>
+                  </div>
+                  <div class="fate-similarity">
+                    <div id="similar2Bar" class="fate-similarity-bar" style="width: 0%"></div>
+                    <span id="similar2Text" class="fate-similarity-text"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fate-section fate-opposite-section">
+              <div class="fate-section-label">✧ 灵魂对望 ✧</div>
+              <div class="fate-opposite-item">
+                <div class="fate-opposite-main">
+                  <div id="oppositeEn" class="fate-perfume-en fate-opposite-en"></div>
+                  <div id="oppositeZh" class="fate-perfume-zh fate-opposite-zh"></div>
+                </div>
+                <div class="fate-opposite-notes">
+                  <span id="oppositeTop" class="fate-note-opposite"></span>
+                  <span id="oppositeHeart" class="fate-note-opposite"></span>
+                  <span id="oppositeBase" class="fate-note-opposite"></span>
+                </div>
+                <span class="fate-opposite-desc">与你灵魂频率完全相反的存在</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="height: 30px;"></div>
+          <div class="analysis-footer">DATA BY AETHERIAL</div>
+          <button class="btn-back" id="btnBackResult">返回</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="resonanceStar" class="resonance-star" style="opacity: 0; left: 50%; top: -50px;"></div>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast" style="display: none;"></div>
+  </div>
+
+  <script src="data/questions.js"></script>
+  <script src="data/perfumes.js"></script>
+  <script src="data/analysis.js"></script>
+  <script src="data/quotes.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
